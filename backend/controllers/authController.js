@@ -41,3 +41,39 @@ export const registerUser = async(req,res)=>{
     return res.json({message:"Internal server error", success:false})
   }
 }
+
+//login user
+export const loginUser= async(req,res)=>{
+  try{
+    const {email,password} = req.body;
+    if(!email || !password){
+      return res.json({message:"Please fill all the fields", success:false});
+    }
+    const user=await User.findOne({email});
+    if(!user){
+      return res.json({message:"User not exist", success:false});
+    }
+    const isMatch=await bcrypt.compare(password,user.password);
+    if(!isMatch){
+      return res.json({message:"Invalid Creadentials", success:false});
+    }  
+    generateToken(res,{id:user._id,role:user.isAdmin?'Admin':'user'})
+     res.json({message:"Login Successfuly", success:true,
+      user:{
+        name:user.name,
+        email:user.email 
+      }
+     });
+
+  }catch(error){
+    console.log(error.message);
+    return res.json({message:"Internal server error", success:false})
+  }
+}
+
+export const logoutUser=async(req,res)=>{
+  try{}
+  catch(error){
+    
+  }
+}
