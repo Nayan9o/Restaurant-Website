@@ -72,8 +72,12 @@ export const loginUser= async(req,res)=>{
 }
 
 export const logoutUser=async(req,res)=>{
-  try{}
+  try{
+    res.clearCookie("token");
+    return res.json({message:"User Logged out successfuly",success:true})
+  }
   catch(error){
-    
+    console.log(error.message)
+    return res.json({message:"Internal server error",success:false})
   }
 }
