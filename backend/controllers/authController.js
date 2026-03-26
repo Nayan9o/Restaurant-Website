@@ -71,6 +71,39 @@ export const loginUser= async(req,res)=>{
   }
 }
 
+//login admin
+export const adminLogin= async(req,res)=>{
+  try{
+    const {email,password}= req.body;
+    if(!email || !password){
+      return res.json({message:"Please fill all the fields", success:false});
+    }
+    const adminEmail=process.env.ADMIN_EMAIL;
+    const adminPassword=process.env.ADMIN_PASSWORD;
+
+    if(email !== adminEmail || password !== adminPassword){
+     return res.json({message:"Invalid credentials", success:false});
+
+    }
+
+    const token=jwt.sign({email},process.env.JWT,{
+      expiresIn:"1d"
+    })
+
+    res.cookie("token",token,{
+    httpOnly:true,
+    secure:process.env.NODE_ENV === "production",
+    sameSite:"strict",
+    maxAge:24*60*60*1000
+  });
+  return res.json({message:"Login successfuly",success:true})
+
+  }catch(error){
+    console.log(error.message);
+    return res.json({message:"Internal server Error",success:flase})
+  }
+}
+
 export const logoutUser=async(req,res)=>{
   try{
     res.clearCookie("token");
