@@ -116,6 +116,8 @@ export const logoutUser=async(req,res)=>{
   }
 }
 
+
+//get profile
 export const getProfile = async (req, res) => {
   try {
     if (!req.user?.id) {
