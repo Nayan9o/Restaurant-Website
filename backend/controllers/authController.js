@@ -100,7 +100,7 @@ export const adminLogin= async(req,res)=>{
 
   }catch(error){
     console.log(error.message);
-    return res.json({message:"Internal server Error",success:flase})
+    return res.json({message:"Internal server Error",success:false})
   }
 }
 
@@ -116,15 +116,34 @@ export const logoutUser=async(req,res)=>{
   }
 }
 
-export const getProfile= async(req,res)=>{
+export const getProfile = async (req, res) => {
   try {
-    const id=req.user;
-    const user= await User.findById(id).select("-password");
-    if(!user){
-      return res.status(404).json({message:"User Not found",success:false})
+    if (!req.user?.id) {
+      return res.status(400).json({
+        message: "Invalid user",
+        success: false,
+      });
     }
-    res.json(user)
+
+    const user = await User.findById(req.user.id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        message: "User Not found",
+        success: false,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+
   } catch (error) {
-  return res.json({message:"Internal server error",success:false})  
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal server error",
+      success: false,
+    });
   }
-}
+};
