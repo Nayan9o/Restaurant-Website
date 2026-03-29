@@ -86,7 +86,7 @@ export const adminLogin= async(req,res)=>{
 
     }
 
-    const token=jwt.sign({email},process.env.JWT,{
+    const token=jwt.sign({email},process.env.JWT_SECRET,{
       expiresIn:"1d"
     })
 
